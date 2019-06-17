@@ -1,0 +1,144 @@
+<LoginLabel@Label>:
+    color: 0, 0, 0, 1
+    font_size: "18dp"
+
+<InputBox@TextInput+FocusBehavior>:
+    canvas.before:
+        Color:
+            rgba: 0, 0, 0, 0.6
+        Line:
+            rectangle: self.x, self.y, self.size[0], self.size[1]
+            width: 2
+
+    write_tab: False
+    multiline: False
+    background_color: 0, 0, 0, 0.1
+    cursor_color: 0, 0, 0, 1
+    font_size: "25dp"
+    spacing: 10
+    # vertically align text at center
+    padding_y: [self.height / 2.0 - (self.line_height / 2.0) * len(self._lines), 0]
+
+<RememberCheck>:
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 0.6
+        Line:
+            rectangle: 0, 0, self.size[0], self.size[1]
+            width: 3
+        Color:
+            rgba: 1, 1, 0.4, 0.4
+        Rectangle:
+            pos: 0, 0
+            size: self.size
+
+<LoginView>:
+
+    canvas.before:
+        Color:
+            rgba: 0.8, 0.8, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    orientation: "vertical"
+    valign: "center"
+    spacing: 30
+
+#    LoginLabel:
+#        markup: True
+#        text: "[u]For testing purpose\nuser id: admin\npassword: Ab123456[/u]"
+#        size_hint: None, None
+#        size: root.width, 50
+
+    Image:
+        source: "res/logo.png"
+        size_hint_y: 0.25
+
+    LoginLabel:
+        markup: True
+        text: "[b]Welcome to Energy Max![/b]"
+        font_size: "35dp"
+        size_hint: 1, .1
+        pos_hint: {"center_x": .5}
+
+    BoxLayout:
+        size_hint: .5, .12
+        pos_hint: {"center_x": .5}
+
+        LoginLabel:
+            text: "User name"
+            text_size: self.size
+            halign: "left"
+            valign: "middle"
+            size_hint: .3, 1
+        InputBox:
+            id: _usr_input
+            focus: True
+            focus_next: _psw_input
+            size_hint: .7, 1
+
+    BoxLayout:
+        size_hint: .5, .12
+        pos_hint: {"center_x": .5}
+
+        LoginLabel:
+            text: "Password"
+            text_size: self.size
+            halign: "left"
+            valign: "middle"
+            size_hint: .3, 1
+        InputBox:
+            id: _psw_input
+            size_hint: .6, 1
+            password: True
+        PasswordEye:
+            psw_input: _psw_input
+            text: "Show"
+            font_size: 12
+            size_hint: .1, 1
+            background_color: 0, 0, 0, 0
+            color: 0, 0, 0, 1
+
+    RelativeLayout:
+        size_hint: .3, .1
+        pos_hint: {"center_x": .5}
+
+        RememberCheck:
+            id: _remember_check
+            width: self.height
+
+        LoginLabel:
+            text: "Remember me"
+            width: root.width - _remember_check.width
+
+    BoxLayout:
+        spacing: 100
+        size_hint: .8, .2
+        pos_hint: {"center_x": .5, "bottom": 1}
+
+        LoginButton:
+            id: _login_btn
+            usr_input: _usr_input
+            psw_input: _psw_input
+            remember_check: _remember_check
+
+            size_hint: .5, .5
+            pos_hint: {"bottom": 1}
+            markup: True
+            text: "[b]Login[/b]"
+            font_size: "20dp"
+            color: 1, 1, 1, 1
+
+        RegisterButton:
+            id: _register_btn
+            usr_input: _usr_input
+            psw_input: _psw_input
+            remember_check: _remember_check
+
+            size_hint: .5, .5
+            pos_hint: {"bottom": 1}
+            markup: True
+            text: "[b]Quick Register[/b]"
+            font_size: "20dp"
+            color: 1, 1, 1, 1
