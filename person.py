@@ -30,10 +30,13 @@ PERSON_SAVE = "save/person_details.p"
 
 class Person:
 
+    single = None
+
     def __init__(self, usr_id, password):
         self.usr_id = usr_id
         self.password = password
         self.hash = None
+        self.__class__.single = self
 
     def __repr__(self):
         return self.usr_id

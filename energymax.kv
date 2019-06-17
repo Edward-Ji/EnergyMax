@@ -1,0 +1,10 @@
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+<AppScreenManager>:
+    transition: FadeTransition(clearcolor=(.8, .8, 1, 1))
+    current: "login_screen"
+    login_screen: _login_screen
+    LoginScreen:
+        id: _login_screen
+        screen_manager: root
+    MainScreen:
+        screen_manager: root

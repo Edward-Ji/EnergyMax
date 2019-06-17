@@ -27,22 +27,26 @@ class PasswordEye(ToggleButton):
 class LoginButton(Button):
 
     def on_release(self):
-        msg = Person(self.usr_input.text, self.psw_input.text).login()
+        usr, psw = self.usr_input.text, self.psw_input.text
+        msg = Person(usr, psw).login()
 
         # if there is an error message display a popup
-        if not msg:
-            msg = "Login success"
-        popup_label = Label(text=msg + DISMISS_MSG, markup=True, color=(1, 1, 1, 1))
-        popup = Popup(title="Login failed",
-                      content=popup_label,
-                      size_hint=(.5, None),
-                      height=300)
+        if msg:
+            popup_label = Label(text=msg + DISMISS_MSG, markup=True, color=(1, 1, 1, 1))
+            popup = Popup(title="Login failed",
+                          content=popup_label,
+                          size_hint=(.5, None),
+                          height=300)
+            popup.open()
+        else:
 
-        # save username and password for next run if remember check
-        if self.remember_check.state:
-            pass
+            # save (or not to save) username and password for next run
+            if not self.remember_check.state:
+                usr, psw = '', ''
+            Settings.push("login_username", usr)
+            Settings.push("login_password", psw)
 
-        popup.open()
+            self.root.screen_manager.current = "main_screen"
 
 
 class RegisterButton(Button):
@@ -64,19 +68,21 @@ class RememberCheck(CheckBox):
 
     def __init__(self, **kwargs):
         super(RememberCheck, self).__init__(**kwargs)
-        self.warned = False
+        self.warned = True  # prevent popup from opening upon initiation of instance
+        self.popup = None
         self.state = Settings.retrieve("remember_psw", "normal")
+        self.warned = False
 
     def on_state(self, instance, value):
-
+        # warn if check for first time
         if value == "down" and not self.warned:
-            popup = Popup(title="Warning!",
-                          content=Label(text="This settings could result in weaker security.",
-                                        markup=True,
-                                        color=(1, 1, 1, 1)),
-                          size_hint=(.5, None),
-                          height=180)
-            popup.open()
+            self.popup = Popup(title="Warning!",
+                               content=Label(text="This settings could result in weaker security.",
+                                             markup=True,
+                                             color=(1, 1, 1, 1)),
+                               size_hint=(.5, None),
+                               height=180)
+            self.popup.open()
             self.warned = True
 
         Settings.push("remember_psw", value)

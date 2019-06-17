@@ -1,0 +1,110 @@
+#:set item_view_width 180
+
+<MainLabel@Label>:
+    color: 0, 0, 0, 1
+    font_size: "18dp"
+
+# layout for each item display
+<ItemView@BoxLayout>:
+    orientation: "vertical"
+    spacing: 8
+    size_hint: None, None
+    size: item_view_width, 300
+
+    img: "unknown_item.png"
+    name: "Unknown Item"
+    price: "-"
+    quantity: 0
+
+    Image:
+        source: "res/item_img/" + self.parent.img
+        size_hint: None, None
+        width: self.parent.width
+        height: self.width
+    MainLabel:
+        text: self.parent.name
+    MainLabel:
+        text: "$ " + str(self.parent.price)
+    BoxLayout:
+        orientation: "horizontal"
+
+        Button:
+            text: "-"
+            on_press: root.quantity -= 1
+        MainLabel:
+            text: str(root.quantity)
+        Button:
+            text: "+"
+            on_press: root.quantity += 1
+
+
+
+<MainScreen@Screen>:
+    name: "main_screen"
+
+    BoxLayout:
+        orientation: "vertical"
+        spacing: 10
+        halign: "center"
+
+        # toolbar
+        BoxLayout:
+            padding: 8
+            spacing: 12
+            valign: "center"
+            size_hint: 1, None
+            height: 65
+            background_color: .6, .6, .9, 1
+
+            Image:
+                source: "res/icon.png"
+                size_hint: None, None
+                size: 48, 48
+
+            MainLabel:
+                markup: True
+                text: "Welcome to [color=ff751a][b][size=24]Energy Max![/color][/b][/size]"
+                width: 65
+
+            Button:
+                text: "Person"
+                size_hint: .3, 1
+                on_release: root.screen_manager.current = "login_screen"
+
+            Button:
+                text: "Cart"
+                size_hint: .3, 1
+
+            Button:
+                text: "Lucky Draw"
+                size_hint: .35, 1
+
+        # scroll view for potentially outnumbered items
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            bar_color: .3, .3, .7, 1
+            bar_width: 5
+            size_hint_y: None
+            height: root.height - 65
+
+            # all items are displayed in this layout
+            GridLayout:
+                padding: 15
+                spacing: 15
+                cols: int(root.width / (item_view_width + self.padding[0]))
+                size_hint_y: None
+                height: self.minimum_height
+
+                ItemView:
+                ItemView:
+                ItemView:
+                ItemView:
+                ItemView:
+                ItemView:
+                ItemView:
+                ItemView:
+                ItemView:
+                ItemView:
+                ItemView:
+                ItemView:
