@@ -4,6 +4,7 @@
 <LoginLabel@Label>:
     color: 0, 0, 0, 1
     font_size: "18dp"
+    size: self.texture_size
 
 # input box that allows tab to focus next
 <InputBox@TextInput+FocusBehavior>:
@@ -24,19 +25,6 @@
     # vertically align text at center
     padding_y: [self.height / 2.0 - (self.line_height / 2.0) * len(self._lines), 0]
 
-#<RememberCheck>:
-#    canvas.before:
-#        Color:
-#            rgba: 1, 1, 1, 0.6
-#        Line:
-#            rectangle: 0, 0, self.size[0], self.size[1]
-#            width: 3
-#        Color:
-#            rgba: 1, 1, 0.4, 0.4
-#        Rectangle:
-#            pos: 0, 0
-#            size: self.size
-
 <LoginScreen@Screen>:
     name: "login_screen"
 
@@ -45,12 +33,8 @@
         orientation: "vertical"
         valign: "center"
         spacing: 30
-
-    #    LoginLabel:
-    #        markup: True
-    #        text: "[u]For testing purpose\nuser id: admin\npassword: Ab123456[/u]"
-    #        size_hint: None, None
-    #        size: root.width, 50
+        size_hint_y: .95
+        pos_hint: {"center_y": .5}
 
         # logo on top
         Image:
@@ -137,7 +121,9 @@
                 remember_check: _remember_check
                 root: root
 
-                size_hint: .5, .5
+                background_normal: "res/button_normal.png"
+                background_down: "res/button_down.png"
+                size_hint: .5, .8
                 pos_hint: {"bottom": 1}
                 markup: True
                 text: "[b]Login[/b]"
@@ -151,7 +137,9 @@
                 remember_check: _remember_check
                 root: root
 
-                size_hint: .5, .5
+                background_normal: "res/button_normal.png"
+                background_down: "res/button_down.png"
+                size_hint: .5, .8
                 pos_hint: {"bottom": 1}
                 markup: True
                 text: "[b]Quick Register[/b]"

@@ -41,8 +41,10 @@ class LoginButton(Button):
         else:
 
             # save (or not to save) username and password for next run
-            if not self.remember_check.state:
+            if self.remember_check.state == "normal":
                 usr, psw = '', ''
+                self.usr_input.text = ''
+                self.psw_input.text = ''
             Settings.push("login_username", usr)
             Settings.push("login_password", psw)
 

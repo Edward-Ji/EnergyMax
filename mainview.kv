@@ -1,19 +1,46 @@
-#:set item_view_width 180
+#:set item_view_width 205
+#:set tool_bar_height 65
+#:set quantity_bound 0, 99  # limit the maximum and minimum quantity of purchase
 
 <MainLabel@Label>:
     color: 0, 0, 0, 1
     font_size: "18dp"
+    size: self.texture_size
+
+<ToolBarButton>:
+    name: ''
+    background_normal: "res/" + self.name + "_btn_normal.png"
+    background_down: "res/" + self.name + "_btn_down.png"
+    size_hint: None, .9
+    width: self.height
+    pos_hint: {"center_y": .5}
+    text_size: self.size
+    halign: "center"
+    valign: "bottom"
+    color: 0, 0, 0, 1
+
+<MainButton>:
+    background_normal: "res/button_normal.png"
+    background_down: "res/button_down.png"
+
+<DropDownButton>:
+    size_hint_y: None
+    height: 44
 
 # layout for each item display
-<ItemView@BoxLayout>:
+<ItemView>:
     orientation: "vertical"
     spacing: 8
     size_hint: None, None
-    size: item_view_width, 300
+    size: item_view_width, 1.6 * item_view_width
 
-    img: "unknown_item.png"
-    name: "Unknown Item"
-    price: "-"
+    canvas.before:
+        Color:
+            rgba: 0, 0, 0, 0.1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
     quantity: 0
 
     Image:
@@ -24,87 +51,84 @@
     MainLabel:
         text: self.parent.name
     MainLabel:
-        text: "$ " + str(self.parent.price)
+        text: "$ {:.2f}".format(self.parent.price)
     BoxLayout:
         orientation: "horizontal"
 
-        Button:
+        MainButton:
             text: "-"
-            on_press: root.quantity -= 1
+            font_size: "50dp"
+            on_press: root.item_action(-1)
         MainLabel:
             text: str(root.quantity)
-        Button:
+        MainButton:
             text: "+"
-            on_press: root.quantity += 1
-
-
+            font_size: "30dp"
+            on_press: root.item_action(1)
 
 <MainScreen@Screen>:
     name: "main_screen"
 
     BoxLayout:
         orientation: "vertical"
-        spacing: 10
-        halign: "center"
 
         # toolbar
         BoxLayout:
-            padding: 8
             spacing: 12
-            valign: "center"
             size_hint: 1, None
-            height: 65
-            background_color: .6, .6, .9, 1
+            height: tool_bar_height
+
+            canvas.before:
+                Color:
+                    rgba: .6, .6, .9, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                Color:
+                    rgba: .45, .45, .8, 1
+                Line:
+                    points: 0, self.y + 2, self.width, self.y + 2
+                    width: 2
 
             Image:
                 source: "res/icon.png"
                 size_hint: None, None
                 size: 48, 48
+                pos_hint: {"center_y": .5}
 
             MainLabel:
                 markup: True
-                text: "Welcome to [color=ff751a][b][size=24]Energy Max![/color][/b][/size]"
-                width: 65
+                text: "Welcome to [color=ffc61a][b][size=24]Energy Max![/color][/b][/size]"
+                pos_hint: {"center_y": .5}
 
-            Button:
-                text: "Person"
-                size_hint: .3, 1
-                on_release: root.screen_manager.current = "login_screen"
+            ProfileButton:
+                root: root
+                name: "Profile"
 
-            Button:
-                text: "Cart"
-                size_hint: .3, 1
+            CartButton:
+                id: _cart
+                root: root
+                name: "Cart"
 
-            Button:
-                text: "Lucky Draw"
-                size_hint: .35, 1
+            ToolBarButton:
+                name: "Wheel"
+                on_release: root.screen_manager.current = "wheel_screen"
 
-        # scroll view for potentially outnumbered items
+        # scroll view for potentially overwhelming amount of items
         ScrollView:
             do_scroll_x: False
             do_scroll_y: True
             bar_color: .3, .3, .7, 1
             bar_width: 5
             size_hint_y: None
-            height: root.height - 65
+            height: root.height - tool_bar_height
 
             # all items are displayed in this layout
-            GridLayout:
-                padding: 15
-                spacing: 15
+            ItemLayout:
+                cart: _cart
+
+                padding: 45
+                spacing: 45
                 cols: int(root.width / (item_view_width + self.padding[0]))
                 size_hint_y: None
                 height: self.minimum_height
-
-                ItemView:
-                ItemView:
-                ItemView:
-                ItemView:
-                ItemView:
-                ItemView:
-                ItemView:
-                ItemView:
-                ItemView:
-                ItemView:
-                ItemView:
-                ItemView:
