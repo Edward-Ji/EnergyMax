@@ -15,6 +15,7 @@ from kivy.core.window import Window
 # configure window size, color and icon
 Window.clearcolor = (0.8, 0.8, 1, 1)
 Config.set("graphics", "resizable", False)
+Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
 # kivy version requirements
 kivy.require("1.10.1")
@@ -37,7 +38,7 @@ class AppScreenManager(ScreenManager):
 class EnergyMaxApp(App):
 
     def build(self):
-        self.icon = "res/icon.png"
+        self.icon = "res/icon.ico"
         return AppScreenManager()
 
 

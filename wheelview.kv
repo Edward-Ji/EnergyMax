@@ -1,6 +1,58 @@
+#:import MainLabel mainview
+#:import MainButton mainview
+
+<ShopButton@ToolBarButton>
+
+<Wheel@RelativeLayout>:
+    radius: min(self.width, self.height) - 20
+
+
 <WheelScreen@Screen>:
     name: "wheel_screen"
 
-    Button:
-        text: "back"
-        on_press: root.screen_manager.current = "main_screen"
+    BoxLayout:
+        orientation: "vertical"
+
+        # toolbar
+        ToolBar:
+
+            ShopButton:
+                on_release: root.screen_manager.current = "main_screen"
+
+            MainLabel:
+                markup: True
+                text: "[color=ff1a1a][b][size=24]Spin [color=00e68a]the [color=ffc61a]Wheel!"
+
+        BoxLayout:
+            orientation: "vertical"
+            spacing: 10
+
+            Wheel:
+                canvas.before:
+                    Color:
+                        rgba: 0.2, 0.8, 0.2, 1
+                    Ellipse:
+                        angle_start: 90
+                        angle_end: 360
+                        pos: self.center_x - self.radius / 2, 10
+                        size: self.radius, self.radius
+                    Color:
+                        rgba: 1, 0.8, 0, 1
+                    Ellipse:
+                        angle_start: 30
+                        angle_end: 90
+                        pos: self.center_x - self.radius / 2, 10
+                        size: self.radius, self.radius
+                    Color:
+                        rgba: 1, 0.3, 0.3, 1
+                    Ellipse:
+                        angle_start: 0
+                        angle_end: 30
+                        pos: self.center_x - self.radius / 2, 10
+                        size: self.radius, self.radius
+
+            MainButton:
+                text: "GO ! ! !"
+                size_hint: None, .1
+                width: 1.6 * self.height
+                pos_hint: {"center_x": .5}

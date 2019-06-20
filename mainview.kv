@@ -7,8 +7,30 @@
     font_size: "18dp"
     size: self.texture_size
 
+<MainButton>:
+    background_normal: "res/button_normal.png"
+    background_down: "res/button_down.png"
+
+<ToolBar>:
+    spacing: 12
+    size_hint: 1, None
+    height: tool_bar_height
+    pos_hint: {"top": 1}
+
+    canvas.before:
+        Color:
+            rgba: .6, .6, .9, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        Color:
+            rgba: .45, .45, .8, 1
+        Line:
+            points: 0, self.y + 2, self.width, self.y + 2
+            width: 2
+
 <ToolBarButton>:
-    name: ''
+    name: self.__class__.__name__.replace("Button", '')
     background_normal: "res/" + self.name + "_btn_normal.png"
     background_down: "res/" + self.name + "_btn_down.png"
     size_hint: None, .9
@@ -19,16 +41,34 @@
     valign: "bottom"
     color: 0, 0, 0, 1
 
-<MainButton>:
-    background_normal: "res/button_normal.png"
-    background_down: "res/button_down.png"
+<WheelButton@ToolBarButton>
 
 <DropDownButton>:
     size_hint_y: None
     height: 44
 
+<SearchInput@TextInput>:
+    canvas.before:
+        Color:
+            rgba: 0, 0, 0, 0.6
+        Line:
+            rectangle: self.x, self.y, self.size[0], self.size[1]
+            width: 2
+
+    write_tab: False  # disable tab allowing focus behaviour
+    multiline: False
+    background_color: 0, 0, 0, 0.1
+    cursor_color: 0, 0, 0, 1
+    font_size: "25dp"
+    spacing: 10
+    # vertically align text at center
+    padding_y: [self.height / 2.0 - (self.line_height / 2.0) * len(self._lines), 0]
+
 # layout for each item display
 <ItemView>:
+    minus_btn: _minus_btn
+    plus_btn: _plus_btn
+
     orientation: "vertical"
     spacing: 8
     size_hint: None, None
@@ -56,15 +96,23 @@
         orientation: "horizontal"
 
         MainButton:
+            id: _minus_btn
             text: "-"
             font_size: "50dp"
             on_press: root.item_action(-1)
         MainLabel:
             text: str(root.quantity)
         MainButton:
+            id: _plus_btn
             text: "+"
             font_size: "30dp"
             on_press: root.item_action(1)
+
+<MainScrollView>:
+    do_scroll_x: False
+    do_scroll_y: True
+    bar_color: .3, .3, .7, 1
+    bar_width: 5
 
 <MainScreen@Screen>:
     name: "main_screen"
@@ -72,26 +120,11 @@
     BoxLayout:
         orientation: "vertical"
 
-        # toolbar
-        BoxLayout:
-            spacing: 12
-            size_hint: 1, None
-            height: tool_bar_height
-
-            canvas.before:
-                Color:
-                    rgba: .6, .6, .9, 1
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
-                Color:
-                    rgba: .45, .45, .8, 1
-                Line:
-                    points: 0, self.y + 2, self.width, self.y + 2
-                    width: 2
+        # top toolbar
+        ToolBar:
 
             Image:
-                source: "res/icon.png"
+                source: "res/icon.ico"
                 size_hint: None, None
                 size: 48, 48
                 pos_hint: {"center_y": .5}
@@ -103,29 +136,35 @@
 
             ProfileButton:
                 root: root
-                name: "Profile"
 
             CartButton:
                 id: _cart
                 root: root
-                name: "Cart"
 
-            ToolBarButton:
-                name: "Wheel"
+            WheelButton:
                 on_release: root.screen_manager.current = "wheel_screen"
 
+        ToolBar:
+
+            Image:
+                source: "res/search_icon.png"
+                size_hint: None, None
+                size: 52, 52
+                pos_hint: {"center_y": .5}
+
+            SearchInput:
+                id: _search_input
+                on_text: _item_display.filter(self.text)
+                size_hint_y: None
+                height: self.parent.height - 8
+                pos_hint: {"center_y": .5}
+
         # scroll view for potentially overwhelming amount of items
-        ScrollView:
-            do_scroll_x: False
-            do_scroll_y: True
-            bar_color: .3, .3, .7, 1
-            bar_width: 5
-            size_hint_y: None
-            height: root.height - tool_bar_height
+        MainScrollView:
 
             # all items are displayed in this layout
             ItemLayout:
-                cart: _cart
+                id: _item_display
 
                 padding: 45
                 spacing: 45

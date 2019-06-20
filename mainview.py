@@ -9,9 +9,15 @@ from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
+from kivy.uix.popup import Popup
+from kivy.uix.scrollview import ScrollView
 
 ITEM_DATA = "res/items.p"
 DISMISS_MSG = "\n\n[i]Click anywhere else to close"
+
+
+class ToolBar(BoxLayout):
+    pass
 
 
 class ToolBarButton(Button):
@@ -54,6 +60,8 @@ class ProfileButton(ToolBarButton):
 
 class CartButton(ToolBarButton):
 
+    single = None
+
     def __init__(self, *args, **kwargs):
         super(CartButton, self).__init__(*args, **kwargs)
 
@@ -86,10 +94,16 @@ class ItemView(BoxLayout):
         super(ItemView, self).__init__()
 
     def item_action(self, value):
+        if self.opacity != 1:
+            return
         try:
             self.quantity += value
         except ValueError:
             return
+
+
+class MainScrollView(ScrollView):
+    pass
 
 
 class ItemLayout(GridLayout):
@@ -101,3 +115,26 @@ class ItemLayout(GridLayout):
             item_data = pickle.load(f)
         for item_info in item_data:
             self.add_widget(ItemView(*item_info))
+
+    def filter(self, text):
+        # recover all item view if search criteria is removed
+        if not text.replace(' ', ''):
+            for child in self.children:
+                child.opacity = 1
+                # re-enable plus and minus buttons for each item view
+                child.plus_btn.disabled = False
+                child.minus_btn.disabled = False
+        else:
+            for child in self.children:
+                # filter according to whether search criteria is included in name or not
+                if text.lower().replace(' ', '') in child.name.lower().replace(' ', ''):
+                    child.opacity = 1
+                    # re-enable plus and minus buttons if disabled
+                    child.plus_btn.disabled = False
+                    child.minus_btn.disabled = False
+
+                else:
+                    # temporarily disable plus and minus buttons
+                    child.opacity = 0.2
+                    child.plus_btn.disabled = True
+                    child.minus_btn.disabled = True

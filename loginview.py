@@ -9,8 +9,26 @@ from kivy.uix.popup import Popup
 from kivy.uix.togglebutton import ToggleButton
 
 
-DISMISS_MSG = "\n\n[i]Click anywhere else to close"
+DISMISS_MSG = "[u]or click anywhere else to close"
 ENCRYPT_CODE = b"Nutrition"
+
+
+def show_popup(title, message):
+    close_btn = Button(text="Close",
+                       size_hint=(None, None),
+                       size=(85, 50),
+                       pos_hint={"center_x": .5})
+    popup_layout = BoxLayout(orientation="vertical")
+    popup_layout.add_widget(Label(text=message,
+                                  markup=True,
+                                  color=(1, 1, 1, 1)))
+    popup_layout.add_widget(close_btn)
+    popup = Popup(title=title,
+                  content=popup_layout,
+                  size_hint=(.5, None),
+                  height=300)
+    close_btn.bind(on_press=popup.dismiss)
+    popup.open()
 
 
 class PasswordEye(ToggleButton):
@@ -32,12 +50,7 @@ class LoginButton(Button):
 
         # if there is an error message display a popup
         if msg:
-            popup_label = Label(text=msg + DISMISS_MSG, markup=True, color=(1, 1, 1, 1))
-            popup = Popup(title="Login failed",
-                          content=popup_label,
-                          size_hint=(.5, None),
-                          height=300)
-            popup.open()
+            show_popup("Login failed", msg)
         else:
 
             # save (or not to save) username and password for next run
@@ -57,13 +70,10 @@ class RegisterButton(Button):
         msg = Person(self.usr_input.text, self.psw_input.text).register()
         # if there is an error message display a popup
         if not msg:
-            msg = "Register success"
-        popup_label = Label(text=msg + DISMISS_MSG, markup=True, color=(1, 1, 1, 1))
-        popup = Popup(title="Register failed",
-                      content=popup_label,
-                      size_hint=(.5, None),
-                      height=300)
-        popup.open()
+            msg = "You have registered your account. Now let's go shopping!"
+            show_popup("Congratulations", msg)
+        else:
+            show_popup("Register failed", msg)
 
 
 class RememberCheck(CheckBox):
@@ -78,13 +88,7 @@ class RememberCheck(CheckBox):
     def on_state(self, instance, value):
         # warn if check for first time
         if value == "down" and not self.warned:
-            self.popup = Popup(title="Warning!",
-                               content=Label(text="This settings could result in weaker security.",
-                                             markup=True,
-                                             color=(1, 1, 1, 1)),
-                               size_hint=(.5, None),
-                               height=180)
-            self.popup.open()
+            show_popup("Warning", "This function could result in weaker security!")
             self.warned = True
 
         Settings.push("remember_psw", value)
