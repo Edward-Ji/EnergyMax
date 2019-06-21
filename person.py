@@ -38,9 +38,6 @@ class Person:
         self.hash = None
         self.__class__.single = self
 
-    def __repr__(self):
-        return self.usr_id
-
     def register(self):
 
         # check usr_id and password syntax, return error message if illegal

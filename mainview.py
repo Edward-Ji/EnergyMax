@@ -1,6 +1,5 @@
-from person import *
+from cart import *
 
-import pickle
 from os.path import isfile
 
 from kivy.properties import BoundedNumericProperty, NumericProperty, ObjectProperty, StringProperty
@@ -8,8 +7,6 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.gridlayout import GridLayout
-from kivy.uix.label import Label
-from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
 
 ITEM_DATA = "res/items.p"
@@ -40,8 +37,8 @@ class ProfileButton(ToolBarButton):
 
     popup = ObjectProperty()
 
-    def __init__(self, *args, **kwargs):
-        super(ProfileButton, self).__init__(*args, **kwargs)
+    def __init__(self, **kwargs):
+        super(ProfileButton, self).__init__(**kwargs)
 
         # add functional elements to drop down menu
         profile_btn = DropDownButton(text="Profile")
@@ -56,25 +53,6 @@ class ProfileButton(ToolBarButton):
 
         # open drop down when mouse is released on button
         self.bind(on_release=self.drop_down.open)
-
-
-class CartButton(ToolBarButton):
-
-    single = None
-
-    def __init__(self, *args, **kwargs):
-        super(CartButton, self).__init__(*args, **kwargs)
-
-        # add functional elements to drop down menu
-        pay_btn = DropDownButton(text="Pay")
-        pay_btn.bind(on_release=lambda x: setattr(self.root.screen_manager, "current", "pay_screen"))
-        pay_btn.bind(on_release=self.drop_down.dismiss)
-        self.drop_down.add_widget(pay_btn)
-        self.bind(on_release=self.drop_down.open)
-
-
-class ToolBar(BoxLayout):
-    pass
 
 
 class ItemView(BoxLayout):
@@ -98,6 +76,7 @@ class ItemView(BoxLayout):
             return
         try:
             self.quantity += value
+            Cart.item_action(self.name, value)
         except ValueError:
             return
 
@@ -111,12 +90,12 @@ class ItemLayout(GridLayout):
     def __init__(self, **kwargs):
         super(ItemLayout, self).__init__(**kwargs)
         # dynamically add item views according to data file
-        with open(ITEM_DATA, 'br') as f:
-            item_data = pickle.load(f)
-        for item_info in item_data:
+        Item.start()  # start item class, load item data
+        for item_info in Item.data:
             self.add_widget(ItemView(*item_info))
 
     def filter(self, text):
+
         # recover all item view if search criteria is removed
         if not text.replace(' ', ''):
             for child in self.children:
@@ -138,3 +117,14 @@ class ItemLayout(GridLayout):
                     child.opacity = 0.2
                     child.plus_btn.disabled = True
                     child.minus_btn.disabled = True
+
+    def refresh(self):
+        # load saved cart
+        saved_cart = Cart.load_cart()
+        for item_view in self.children:
+            for name, info in saved_cart.items():
+                if item_view.name == name:
+                    item_view.quantity = info[1]
+                    break
+            else:
+                item_view.quantity = 0

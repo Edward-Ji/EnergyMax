@@ -1,6 +1,7 @@
 from person import *
 from settings import *
 
+from kivy.clock import Clock
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.checkbox import CheckBox
@@ -37,9 +38,17 @@ class PasswordEye(ToggleButton):
         if self.text == "Show":
             self.text = "Hide"
             self.psw_input.password = False
+            # hide password after shown for 3 seconds
+            Clock.schedule_once(lambda t: self.hide(), 3)
         else:
             self.text = "Show"
             self.psw_input.password = True
+        return True
+
+    # automatically hide password for better security
+    def hide(self):
+        self.text = "Show"
+        self.psw_input.password = True
 
 
 class LoginButton(Button):

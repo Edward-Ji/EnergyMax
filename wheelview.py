@@ -1,1 +1,1 @@
-from mainview import ToolBar, ToolBarButton, ScrollView
+from mainview import ToolBar, ToolBarButton

@@ -11,7 +11,7 @@
     background_normal: "res/button_normal.png"
     background_down: "res/button_down.png"
 
-<ToolBar>:
+<ToolBar@BoxLayout>:
     spacing: 12
     size_hint: 1, None
     height: tool_bar_height
@@ -40,6 +40,8 @@
     halign: "center"
     valign: "bottom"
     color: 0, 0, 0, 1
+
+<CartButton@ToolBarButton>
 
 <WheelButton@ToolBarButton>
 
@@ -101,7 +103,7 @@
             font_size: "50dp"
             on_press: root.item_action(-1)
         MainLabel:
-            text: str(root.quantity)
+            text:  str(root.quantity)
         MainButton:
             id: _plus_btn
             text: "+"
@@ -116,6 +118,7 @@
 
 <MainScreen@Screen>:
     name: "main_screen"
+    item_layout: _item_layout
 
     BoxLayout:
         orientation: "vertical"
@@ -138,8 +141,7 @@
                 root: root
 
             CartButton:
-                id: _cart
-                root: root
+                on_release: root.screen_manager.current = "pay_screen"
 
             WheelButton:
                 on_release: root.screen_manager.current = "wheel_screen"
@@ -154,17 +156,17 @@
 
             SearchInput:
                 id: _search_input
-                on_text: _item_display.filter(self.text)
                 size_hint_y: None
                 height: self.parent.height - 8
                 pos_hint: {"center_y": .5}
+                on_text: _item_layout.filter(self.text)
 
         # scroll view for potentially overwhelming amount of items
         MainScrollView:
 
             # all items are displayed in this layout
             ItemLayout:
-                id: _item_display
+                id: _item_layout
 
                 padding: 45
                 spacing: 45

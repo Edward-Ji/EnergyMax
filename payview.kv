@@ -1,6 +1,109 @@
+<MainLabel>:
+    color: 0, 0, 0, 1
+    font_size: "18dp"
+    size: self.texture_size
+
+<PayLabel@Label>:
+    color: 0, 0, 0, 1
+    font_size: "18dp"
+    text_size: self.size
+    halign: "right"
+
+<CartLabel@Label>:
+    color: 0, 0, 0, 1
+    font_size: "18dp"
+    text_size: self.size
+
+<ShopButton@ToolBarButton>
+
+<PayButton>
+
+<CartItem>:
+    size_hint_y: None
+    height: 35
+    name: "Loading..."
+    price: 0
+    quantity: 0
+
+    canvas.after:
+        Color:
+            rgba: .45, .45, .8, 1
+        Line:
+            points: 0, self.y + self.width, self.width, self.y + self.width
+            width: 2
+
+    CartLabel:
+        text: root.name
+        halign: "left"
+    CartLabel:
+        text: "$ " + str(root.price)
+        halign: "right"
+    CartLabel:
+        text: str(root.quantity)
+        halign: "right"
+
 <PayScreen@Screen>:
     name: "pay_screen"
 
-    Button:
-        text: "back"
-        on_press: root.screen_manager.current = "main_screen"
+    cart_layout: _cart_layout
+
+    BoxLayout:
+        orientation: "vertical"
+
+        # toolbar
+        ToolBar:
+
+            ShopButton:
+                on_release: root.screen_manager.current = "main_screen"
+
+            MainLabel:
+                markup: True
+                text: "[b][size=24]Cart[/b][/size]"
+
+        BoxLayout:
+            id: _receipt
+
+            orientation: "vertical"
+
+            MainScrollView:
+
+                CartLayout:
+                    id: _cart_layout
+                    status_bar: _status_bar
+                    pay_button: _pay_button
+
+                    orientation: "vertical"
+                    padding: 10
+                    size_hint_y: None
+                    height: self.minimum_height
+
+            ToolBar:
+                id: _status_bar
+
+                total: 0
+                discount: 0
+                payment: 0
+
+                orientation: "vertical"
+                padding: 10
+                spacing: 5
+                size_hint_y: None
+                height: 100
+
+                PayLabel:
+                    text: "Total -> ${:.2f}".format(self.parent.total)
+
+                PayLabel:
+                    text: "Discount -> ${:.2f}".format(self.parent.discount)
+
+                PayLabel:
+                    text: "Payment -> ${:.2f}".format(self.parent.payment)
+
+        PayButton:
+            id: _pay_button
+            receipt: _receipt
+
+            text: "Pay"
+            size_hint: .3, None
+            height: 52
+            pos_hint: {"center_x": .5, "center_y": .5}
