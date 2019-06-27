@@ -1,18 +1,28 @@
-#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+#:import NoTransition kivy.uix.screenmanager.NoTransition
 <AppScreenManager>:
-    transition: FadeTransition(clearcolor=(.8, .8, 1, 1))
+    transition: NoTransition()
     current: "login_screen"
     login_screen: _login_screen
     main_screen: _main_screen
-    pay_screen: _pay_screen
+    cart_screen: _cart_screen
+    wheel_screen: _wheel_screen
+    profile_screen: _profile_screen
+    receipt_screen: _receipt_screen
     LoginScreen:
         id: _login_screen
         screen_manager: root
     MainScreen:
         id: _main_screen
         screen_manager: root
-    PayScreen:
-        id: _pay_screen
+    CartScreen:
+        id: _cart_screen
         screen_manager: root
     WheelScreen:
+        id: _wheel_screen
+        screen_manager: root
+    ProfileScreen:
+        id: _profile_screen
+        screen_manager: root
+    ReceiptScreen:
+        id: _receipt_screen
         screen_manager: root

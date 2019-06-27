@@ -1,13 +1,9 @@
-#:import MainLabel mainview
-#:import MainButton mainview
-
-<ShopButton@ToolBarButton>
-
-<Wheel@RelativeLayout>:
+<WheelLayout>:
     radius: min(self.width, self.height) - 20
 
 <WheelScreen@Screen>:
     name: "wheel_screen"
+    wheel_layout: _wheel_layout
 
     BoxLayout:
         orientation: "vertical"
@@ -20,38 +16,51 @@
 
             MainLabel:
                 markup: True
-                text: "[color=ff1a1a][b][size=24]Spin [color=00e68a]the [color=ffc61a]Wheel!"
+                text: "[color=ff1a1a][b][size=24]Lucky [color=ffc61a]Draw [color=00e68a]!"
+
+            HelpButton:
+                msg:
+                    "Press [i]GO[/i] to get a free item.\n"\
+                    "It will be chosen from all our products at random.\n"\
+                    "You can only participate in this activity once a week.\n"
 
         BoxLayout:
             orientation: "vertical"
             spacing: 10
 
-            Wheel:
+            WheelLayout:
+                id: _wheel_layout
+                size_hint: 1, .8
+
                 canvas.before:
                     Color:
-                        rgba: 0.2, 0.8, 0.2, 1
-                    Ellipse:
-                        angle_start: 90
-                        angle_end: 360
-                        pos: self.center_x - self.radius / 2, 10
-                        size: self.radius, self.radius
-                    Color:
-                        rgba: 1, 0.8, 0, 1
-                    Ellipse:
-                        angle_start: 30
-                        angle_end: 90
-                        pos: self.center_x - self.radius / 2, 10
-                        size: self.radius, self.radius
-                    Color:
-                        rgba: 1, 0.3, 0.3, 1
-                    Ellipse:
-                        angle_start: 0
-                        angle_end: 30
-                        pos: self.center_x - self.radius / 2, 10
-                        size: self.radius, self.radius
+                        rgba: 1, 1, .4, 1
+                    Line:
+                        rectangle: self.width / 2 - 105, self.height / 2 - 105, 220, 220
+                        width: 10
+
+                MainLabel:
+                    markup: True
+                    text: "[b][size=24][color=cc00cc]You have used up your chance of the week.\nCome back next Monday!"
+                    pos_hint: {"center_x": .5, "center_y": .1}
+                    opacity: 0 if self.parent.available or self.parent.shuffling else 1
+
+                Image:
+                    source: "res/item_img/" + self.parent.img
+                    size_hint: None, None
+                    size: 200, 200
+                    pos_hint: {"center_x": .5, "center_y": .5}
+
+                MainLabel:
+                    markup: True
+                    text: "[b][size=32]" + self.parent.name
+                    pos_hint: {"center_x": .5, "center_y": .9}
 
             MainButton:
-                text: "GO ! ! !"
-                size_hint: None, .1
+                markup: True
+                text: "[b][size=24]GO ! ! !"
+                size_hint: None, .15
                 width: 1.6 * self.height
                 pos_hint: {"center_x": .5}
+                disabled: not _wheel_layout.available
+                on_press: _wheel_layout.begin()

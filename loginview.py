@@ -6,6 +6,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.checkbox import CheckBox
 from kivy.uix.label import Label
+from kivy.uix.screenmanager import FadeTransition, CardTransition, NoTransition
 from kivy.uix.popup import Popup
 from kivy.uix.togglebutton import ToggleButton
 
@@ -14,7 +15,7 @@ DISMISS_MSG = "[u]or click anywhere else to close"
 ENCRYPT_CODE = b"Nutrition"
 
 
-def show_popup(title, message):
+def show_popup(title, message, btn_text=None, btn_bind=None):
     close_btn = Button(text="Close",
                        size_hint=(None, None),
                        size=(85, 50),
@@ -23,13 +24,27 @@ def show_popup(title, message):
     popup_layout.add_widget(Label(text=message,
                                   markup=True,
                                   color=(1, 1, 1, 1)))
+    if btn_text and btn_bind:
+        extra_btn = Button(text=btn_text,
+                           size_hint=(None, None),
+                           size=(85, 50),
+                           pos_hint={"center_x": .5})
+        for event in btn_bind:
+            extra_btn.bind(on_press=event)
+        popup_layout.add_widget(extra_btn)
     popup_layout.add_widget(close_btn)
     popup = Popup(title=title,
                   content=popup_layout,
                   size_hint=(.5, None),
                   height=300)
+    if btn_text and btn_bind:
+        extra_btn.bind(on_press=popup.dismiss)
     close_btn.bind(on_press=popup.dismiss)
     popup.open()
+
+
+class InputBox:
+    pass
 
 
 class PasswordEye(ToggleButton):
@@ -70,7 +85,9 @@ class LoginButton(Button):
             Settings.push("login_username", usr)
             Settings.push("login_password", psw)
 
+            self.root.screen_manager.transition = CardTransition(direction="up", mode="pop")
             self.root.screen_manager.current = "main_screen"
+            self.root.screen_manager.transition = FadeTransition(clearcolor=(.8, .8, 1, 1))
 
 
 class RegisterButton(Button):
@@ -79,7 +96,7 @@ class RegisterButton(Button):
         msg = Person(self.usr_input.text, self.psw_input.text).register()
         # if there is an error message display a popup
         if not msg:
-            msg = "You have registered your account. Now let's go shopping!"
+            msg = "You have registered your account.\n Login to start shopping!"
             show_popup("Congratulations", msg)
         else:
             show_popup("Register failed", msg)

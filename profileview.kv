@@ -1,0 +1,144 @@
+<BackButton@ToolBarButton>
+
+<AddCardLayout>:
+    card_number: _card_number
+    exp_day: _exp_day
+    exp_month: _exp_month
+    exp_year: _exp_year
+    exp_date: _exp_day, _exp_month, _exp_year
+
+    orientation: "vertical"
+    spacing: 10
+    size_hint: .95, None
+    height: self.minimum_height
+    pos_hint: {"center_x": .5}
+
+    BoxLayout:
+        size_hint_y: None
+        height: 52
+
+        MainLabel:
+            text: "Card number"
+            size_hint_x: .22
+        InputBox:
+            id: _card_number
+        MainLabel:
+            size_hint_x: .1
+            text: str(len(_card_number.text)) + " / 16"
+
+    BoxLayout:
+        size_hint_y: None
+        height: 104
+
+        MainLabel:
+            text: "Expiry Date"
+        BoxLayout:
+            orientation: "vertical"
+            InputBox:
+                id: _exp_day
+            MainLabel:
+                text: "DD"
+        BoxLayout:
+            orientation: "vertical"
+            MainLabel:
+                text: '/'
+            MainLabel:
+                text: '/'
+        BoxLayout:
+            orientation: "vertical"
+            InputBox:
+                id: _exp_month
+            MainLabel:
+                text: "MM"
+        BoxLayout:
+            orientation: "vertical"
+            MainLabel:
+                text: '/'
+            MainLabel:
+                text: '/'
+        BoxLayout:
+            orientation: "vertical"
+            InputBox:
+                id: _exp_year
+            MainLabel:
+                text: "YY"
+    MainButton:
+        text: "Add"
+        size_hint: .3, None
+        height: 52
+        pos_hint: {"center_x": .5}
+        on_release: root.add()
+
+<CardItem>:
+
+    size_hint_y: None
+    height: 200
+
+    number: "---- ---- ---- ----"
+    number_hint: "**** **** **** ----"
+    exp_date: "00/00/00"
+
+    Image:
+        source: "res/bank_card.png"
+        size: root.size
+
+    MainLabel:
+        text: root.exp_date
+        pos_hint: {"center_x": .5, "center_y": .6}
+
+    MainLabel:
+        text: "DD/MM/YYYY"
+        pos_hint: {"center_X": .5, "center_y": .5}
+        font_size: 13
+
+    CardNumberLabel:
+        root: root
+        text: root.number_hint
+        size_hint: None, None
+        size: 150, 30
+        pos_hint: {"center_x": .5, "center_y": .4}
+        color: 0, 0, 0, 1
+        font_size: "18dp"
+
+    ToolBarButton:
+        name: "cross"
+        pos_hint: {"top": 1, "right": 1}
+        on_release: root.remove()
+
+<CardLayout>:
+    orientation: "horizontal"
+    padding: 10
+    spacing: 10
+    size_hint_y: None
+    height: self.minimum_height
+
+<ProfileScreen@Screen>:
+    name: "profile_screen"
+    card_layout: _card_layout
+
+    BoxLayout:
+        orientation: "vertical"
+
+        ToolBar:
+
+            BackButton:
+                on_release: root.screen_manager.back()
+
+            MainLabel:
+                markup: True
+                text: "[b][size=24]Profile[/b][/size]"
+
+        MainScrollView:
+
+            BoxLayout:
+                orientation: "vertical"
+                padding: 10
+                spacing: 10
+                size_hint_y: None
+                height: self.minimum_height
+
+                AddCardLayout:
+                    card_layout: _card_layout
+
+                CardLayout:
+                    id: _card_layout

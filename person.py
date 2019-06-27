@@ -1,7 +1,8 @@
-import pickle
-import re
+import datetime
 import hashlib
+import pickle
 import random
+import re
 from string import printable
 
 
@@ -25,7 +26,7 @@ LEGAL_PSW = """Password requirements for your data security
 """
 PSW_PATTERN = r"^[\d]*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*$"
 
-PERSON_SAVE = "save/person_details.p"
+PERSON_SAVE = "save/person.p"
 
 
 class Person:
@@ -36,6 +37,7 @@ class Person:
         self.usr_id = usr_id
         self.password = password
         self.hash = None
+        self.cards = []
         self.__class__.single = self
 
     def register(self):
@@ -48,9 +50,8 @@ class Person:
 
         # check if user name is registered
         try:
-            # load file first
             usr_map = pickle.load(open(PERSON_SAVE, 'br'))
-        except FileNotFoundError:
+        except (FileNotFoundError, EOFError):
             usr_map = {}
         if self.usr_id in usr_map:
             return "User name is occupied"
@@ -63,7 +64,7 @@ class Person:
         self.hash = hashlib.sha256(code).hexdigest()
 
         # save hash
-        usr_map[self.usr_id] = self.hash
+        usr_map[self.usr_id] = self.hash, self.cards
         pickle.dump(usr_map, open(PERSON_SAVE, 'bw'))
 
     def login(self):
@@ -71,21 +72,50 @@ class Person:
         # load from file
         try:
             usr_map = pickle.load(open(PERSON_SAVE, 'br'))
-        except FileNotFoundError:
-            return "No user registered"
-        usr_hash = usr_map.get(self.usr_id)
+        except (FileNotFoundError, EOFError):
+            return "No user named " + self.usr_id + " found"
+        usr_info = usr_map.get(self.usr_id, None)
 
         # check user id
         if not self.usr_id:
             return "User name cannot be empty"
-        if not usr_hash:
+        if not usr_info:
             return "No user named " + self.usr_id + " found"
+        else:
+            self.hash, self.cards = usr_info
 
         # check password
         salt = "energymax"
         for pepper in printable:
             code = self.password + salt + pepper
             code = code.encode("utf-8")
-            if usr_hash == hashlib.sha256(code).hexdigest():
+            if self.hash == hashlib.sha256(code).hexdigest():
                 return None
         return "Incorrect password"
+
+    def add_card(self, number, exp_date):
+
+        # three card maximum
+        if len(self.cards) >= 3:
+            return "You can not bind more than three bank cards.\n" \
+                   "Remove a existing card and retry."
+
+        # load existing cards
+        usr_map = pickle.load(open(PERSON_SAVE, 'br'))
+
+        # check if card already exists
+        h, cards = usr_map[self.usr_id]
+        if number in [c[0] for c in cards]:
+            return "Card already exists."
+
+        # save to file
+        self.cards.append((number, exp_date))
+        usr_map[self.usr_id] = self.hash, self.cards
+        pickle.dump(usr_map, open(PERSON_SAVE, 'bw'))
+
+    def remove_card(self, index):
+        # save to self and file
+        del self.cards[index]
+        usr_map = pickle.load(open(PERSON_SAVE, 'br'))
+        usr_map[self.usr_id] = self.hash, self.cards
+        pickle.dump(usr_map, open(PERSON_SAVE, 'bw'))

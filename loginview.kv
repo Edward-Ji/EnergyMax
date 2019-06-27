@@ -1,4 +1,4 @@
-#: import Settings settings.Settings
+#:import Settings settings.Settings
 
 # universal label
 <LoginLabel@Label>:
@@ -8,13 +8,14 @@
 
 # input box that allows tab to focus next
 <InputBox@TextInput+FocusBehavior>:
-    # customised look for input box
-    canvas.before:
-        Color:
-            rgba: 0, 0, 0, 0.6
-        Line:
-            rectangle: self.x, self.y, self.size[0], self.size[1]
-            width: 2
+
+    # outline
+#    canvas.before:
+#        Color:
+#            rgba: 0, 0, 0, 0.6
+#        Line:
+#            rectangle: self.x + 1, self.y + 1, self.width - 1, self.height - 1
+#            width: 2
 
     write_tab: False  # disable tab allowing focus behaviour
     multiline: False
@@ -35,6 +36,13 @@
         spacing: 30
         size_hint_y: .95
         pos_hint: {"center_y": .5}
+
+        canvas:
+            Color:
+                rgba: 0.8, 0.8, 1, 1
+            Rectangle:
+                pos: 0, 0
+                size: self.size
 
         # logo on top
         Image:
@@ -63,9 +71,8 @@
             InputBox:
                 id: _usr_input
                 focus: True
-                focus_next: _psw_input
                 size_hint: .7, 1
-                text: Settings.retrieve("login_username", "admin")
+                text: Settings.retrieve("login_username", '')
 
         # password label and input box
         BoxLayout:
@@ -82,7 +89,7 @@
                 id: _psw_input
                 size_hint: .6, 1
                 password: True
-                text: Settings.retrieve("login_password", "Ab123456")
+                text: Settings.retrieve("login_password", '')
             # allow toggle show and hide password
             PasswordEye:
                 psw_input: _psw_input

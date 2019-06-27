@@ -11,7 +11,7 @@ class Settings:
         try:
             with open(SETTINGS_SAVE, 'br') as f:
                 self.data = pickle.load(f)
-        except FileNotFoundError:
+        except (FileNotFoundError, EOFError):
             self.data = {}
             f = open(SETTINGS_SAVE, 'bw')
             pickle.dump(self.data, f)

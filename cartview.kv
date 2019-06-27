@@ -1,0 +1,132 @@
+<CartLabel@Label>:
+    color: 0, 0, 0, 1
+    font_size: "18dp"
+    text_size: self.size
+    halign: "right"
+
+<ShopButton@ToolBarButton>
+
+<PayButton>
+
+<CartTitle>:
+    size_hint: 1, None
+    height: 35
+
+    canvas.after:
+        Color:
+            rgba: .45, .45, .8, 1
+        Line:
+            points: 0, self.y + 1, self.width + 10, self.y + 1
+            width: 2
+
+    CartLabel:
+        text: "Name"
+        size_hint_x: .6
+        halign: "left"
+    CartLabel:
+        text: "Price"
+        halign: "right"
+        size_hint_x: .2
+    CartLabel:
+        text: "Quantity"
+        halign: "right"
+        size_hint_x: .2
+
+<CartItem>:
+    size_hint_y: None
+    height: 35
+    name: "Loading..."
+    price: 0
+    quantity: 0
+
+    canvas.after:
+        Color:
+            rgba: .45, .45, .8, 1
+        Line:
+            points: 0, self.y + 1, self.width + 10, self.y + 1
+            width: 1
+
+    CartLabel:
+        text: root.name
+        halign: "left"
+        size_hint_x: .6
+    CartLabel:
+        text: "$ {:.2f}".format(root.price)
+        halign: "right"
+        size_hint_x: .2
+    CartLabel:
+        text: str(root.quantity)
+        halign: "right"
+        size_hint_x: .2
+
+<CartLayout>:
+    orientation: "vertical"
+    padding: 10
+    size_hint_y: None
+    height: self.minimum_height
+
+<StatusBar@ToolBar>:
+    total: 0
+    discount: 0
+    payment: 0
+
+    orientation: "vertical"
+    padding: 10
+    spacing: 5
+    size_hint_y: None
+    height: 100
+
+    CartLabel:
+        text: "Total -> ${:.2f}".format(root.total)
+
+    CartLabel:
+        text: "Discount -> ${:.2f}".format(root.discount)
+
+    CartLabel:
+        text: "Payment -> ${:.2f}".format(root.payment)
+
+<CartScreen@Screen>:
+    name: "cart_screen"
+
+    cart_layout: _cart_layout
+
+    BoxLayout:
+        orientation: "vertical"
+
+        # toolbar
+        ToolBar:
+
+            ShopButton:
+                on_release: root.screen_manager.current = "main_screen"
+
+            MainLabel:
+                markup: True
+                text: "[b][size=24]Cart[/b][/size]"
+
+            HelpButton:
+                msg:
+                    "Get 10% off with over $250 purchase!\n"\
+                    "Regular customers receive further 5% discount!\n"\
+                    "You need to have at least one bank card to pay."
+
+        BoxLayout:
+            orientation: "vertical"
+
+            MainScrollView:
+
+                CartLayout:
+                    id: _cart_layout
+                    status_bar: _status_bar
+                    pay_button: _pay_button
+
+            StatusBar:
+                id: _status_bar
+
+        PayButton:
+            id: _pay_button
+            root: root
+
+            text: "Pay"
+            size_hint: .3, None
+            height: 52
+            pos_hint: {"center_x": .5, "center_y": .5}

@@ -75,3 +75,8 @@ class Cart:
             discount = 0.1 * total
         payment = total - discount
         return total, discount, payment
+
+    @classmethod
+    def clear_cart(cls):
+        cls.content = {}
+        cls.save_cart()

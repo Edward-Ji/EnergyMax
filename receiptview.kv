@@ -1,0 +1,78 @@
+<ReceiptLabel@Label>:
+    markup: True
+    color: 0, 0, 0, 1
+    font_size: "18dp"
+    text_size: self.size
+    size_hint_y: None
+    height: 32
+
+<ReceiptPair>:
+    padding: 10
+    size_hint_y: None
+    height: self.minimum_height
+
+    ReceiptLabel:
+        text: root.key
+        halign: "left"
+
+    ReceiptLabel:
+        text: root.val
+        halign: "right"
+
+<ReceiptLayout>
+    size_hint_y: None
+    height: self.minimum_height
+
+<SaveButton@ToolBarButton>
+
+<ReceiptScreen@Screen>:
+    name: "receipt_screen"
+
+    cart_layout: _cart_layout
+    receipt: _receipt
+
+    BoxLayout:
+        orientation: "vertical"
+
+        # toolbar
+        ToolBar:
+
+            ShopButton:
+                on_release: root.screen_manager.current = "main_screen"
+
+            MainLabel:
+                markup: True
+                text: "[b][size=24]Receipt[/b][/size]"
+
+            SaveButton:
+                on_release: _receipt.save_to_file()
+
+        MainScrollView:
+            size_hint_x: .5
+            pos_hint: {"center_x": .5}
+
+            ReceiptLayout:
+                id: _receipt
+                root: root
+
+                orientation: "vertical"
+
+                canvas:
+                    Color:
+                        rgba: 1, 1, 1, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+                ReceiptLabel:
+                    markup: True
+                    text: "[b]Receipt[/b]"
+                    font_size: 30
+                    halign: "center"
+
+                CartLayout:
+                    id: _cart_layout
+                    status_bar: _status_bar
+
+                StatusBar:
+                    id: _status_bar
