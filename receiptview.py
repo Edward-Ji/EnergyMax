@@ -5,6 +5,8 @@ import datetime
 import os
 from loginview import show_popup
 
+from kivy.clock import Clock
+from kivy.properties import StringProperty
 from kivy.uix.boxlayout import BoxLayout
 
 
@@ -18,9 +20,8 @@ class ReceiptPair(BoxLayout):
 
 class ReceiptLayout(BoxLayout):
 
-    def __init__(self, **kwargs):
-        super(ReceiptLayout, self).__init__(**kwargs)
-        self.serial = None
+    path = StringProperty()
+    serial = StringProperty()
 
     def refresh(self):
 
@@ -43,10 +44,6 @@ class ReceiptLayout(BoxLayout):
         for key, val in info.items():
             self.add_widget(ReceiptPair(key=key, val=val))
 
-    def save_to_file(self):
-        path = "receipts/{}.png".format(self.serial)
-        if not os.path.exists(path):
-            self.export_to_png(path)
-            show_popup("Saved", "Your receipt is saved to\n{}".format(os.path.abspath(path)))
-        else:
-            show_popup("Warning", "The file already exists.")
+        # export receipt as png
+        self.path = os.path.abspath("receipts/{}.png".format(self.serial))
+        Clock.schedule_once(lambda _: self.export_to_png(self.path))  # export as soon as widget is rendered net frame

@@ -14,6 +14,22 @@ card_number_pattern = r"[\d]{16}$"
 card_exp_date_pattern = r"[\d]{2}$"
 
 
+# profile settings under change password subject
+class ChangePswBtn(MainButton):
+
+    def on_release(self):
+        ori_psw, new_psw = self.ori_psw.text, self.new_psw.text
+        msg = Person.single.change_psw(ori_psw, new_psw)
+        if msg:
+            show_popup("Request failed", msg)
+        else:
+            show_popup("Congratulations", "You successfully changed your password!")
+            # clear password prevent breach
+            self.ori_psw.psw_input.text = ''
+            self.new_psw.psw_input.text = ''
+
+
+# profile settings under cards subject
 class AddCardLayout(BoxLayout):
 
     default_color = 0, 0, 0, 0.1

@@ -40,6 +40,13 @@ class Person:
         self.cards = []
         self.__class__.single = self
 
+    def generate_hash(self):
+        salt = "energymax"
+        pepper = random.choice(printable)
+        code = self.password + salt + pepper  # add salt and pepper for better encryption
+        code = code.encode("utf-8")
+        self.hash = hashlib.sha256(code).hexdigest()
+
     def register(self):
 
         # check usr_id and password syntax, return error message if illegal
@@ -57,11 +64,7 @@ class Person:
             return "User name is occupied"
 
         # generate hash
-        salt = "energymax"
-        pepper = random.choice(printable)
-        code = self.password + salt + pepper  # add salt and pepper for better encryption
-        code = code.encode("utf-8")
-        self.hash = hashlib.sha256(code).hexdigest()
+        self.generate_hash()
 
         # save hash
         usr_map[self.usr_id] = self.hash, self.cards
@@ -92,6 +95,28 @@ class Person:
             if self.hash == hashlib.sha256(code).hexdigest():
                 return None
         return "Incorrect password"
+
+    def change_psw(self, ori_psw, new_psw):
+
+        # check password
+        if not ori_psw == self.password:
+            return "The original password is not correct."
+
+        # check new password syntax
+        if new_psw == self.password:
+            return "You need to change to a different password."
+        if not re.match(PSW_PATTERN, self.password):
+            return LEGAL_PSW
+
+        # generate hash
+        self.password = new_psw
+        self.generate_hash()
+
+        # save new password
+        usr_map = pickle.load(open(PERSON_SAVE, 'br'))
+        h, self.cards = usr_map[self.usr_id]
+        usr_map[self.usr_id] = self.hash, self.cards
+        pickle.dump(usr_map, open(PERSON_SAVE, 'bw'))
 
     def add_card(self, number, exp_date):
 

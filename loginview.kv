@@ -22,9 +22,36 @@
     background_color: 0, 0, 0, 0.1
     cursor_color: 0, 0, 0, 1
     font_size: "25dp"
-    spacing: 10
-    # vertically align text at center
-    padding_y: [self.height / 2.0 - (self.line_height / 2.0) * len(self._lines), 0]
+    padding_y: [self.height / 2.0 - (self.line_height / 2.0) * len(self._lines), 0]  # vertically align text at center
+
+<PasswordInput@BoxLayout>:
+
+    psw_input: _psw_input
+    text: _psw_input.text
+    text_hint: "Password"
+    auto_fill: False
+
+    LoginLabel:
+        text: root.text_hint
+        text_size: self.size
+        halign: "left"
+        valign: "middle"
+        size_hint: .3, 1
+
+    InputBox:
+        id: _psw_input
+        size_hint: .6, 1
+        password: True
+        text: Settings.retrieve("login_password", '') if root.auto_fill else ''
+
+    # allow toggle show and hide password
+    PasswordEye:
+        psw_input: _psw_input
+        text: "Show"
+        font_size: 12
+        size_hint: .1, 1
+        background_color: 0, 0, 0, 0
+        color: 0, 0, 0, 1
 
 <LoginScreen@Screen>:
     name: "login_screen"
@@ -75,29 +102,13 @@
                 text: Settings.retrieve("login_username", '')
 
         # password label and input box
-        BoxLayout:
+        PasswordInput:
+            id: _psw_input
+
+            auto_fill: True
+
             size_hint: .5, .12
             pos_hint: {"center_x": .5}
-
-            LoginLabel:
-                text: "Password"
-                text_size: self.size
-                halign: "left"
-                valign: "middle"
-                size_hint: .3, 1
-            InputBox:
-                id: _psw_input
-                size_hint: .6, 1
-                password: True
-                text: Settings.retrieve("login_password", '')
-            # allow toggle show and hide password
-            PasswordEye:
-                psw_input: _psw_input
-                text: "Show"
-                font_size: 12
-                size_hint: .1, 1
-                background_color: 0, 0, 0, 0
-                color: 0, 0, 0, 1
 
         # remember me check box and label
         RelativeLayout:

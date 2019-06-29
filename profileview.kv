@@ -1,5 +1,27 @@
 <BackButton@ToolBarButton>
 
+<SubjectLabel@BoxLayout>:
+
+    text: ''
+
+    canvas:
+        Color:
+            rgba: .45, .45, .8, 1
+        Line:
+            points: 0, self.y + 2, self.width, self.y + 2
+            width: 2
+
+    size_hint_y: None
+    height: 45
+
+    Label:
+        color: 0, 0, 0, 1
+        font_size: "23dp"
+        size_hint: None, None
+        size: self.texture_size
+        halign: "left"
+        text: root.text
+
 <AddCardLayout>:
     card_number: _card_number
     exp_day: _exp_day
@@ -31,7 +53,7 @@
         height: 104
 
         MainLabel:
-            text: "Expiry Date"
+            text: "Expiry date"
         BoxLayout:
             orientation: "vertical"
             InputBox:
@@ -136,6 +158,37 @@
                 spacing: 10
                 size_hint_y: None
                 height: self.minimum_height
+
+                SubjectLabel:
+                    text: "Change password"
+
+                PasswordInput:
+                    id: _ori_psw
+
+                    size_hint_y: None
+                    height: 52
+                    text: ''
+                    text_hint: "Original password"
+
+                PasswordInput:
+                    id: _new_psw
+
+                    size_hint_y: None
+                    height: 52
+                    text: ''
+                    text_hint: "New password"
+
+                ChangePswBtn:
+                    ori_psw: _ori_psw
+                    new_psw: _new_psw
+
+                    text: "Confirm"
+                    size_hint: .3, None
+                    height: 52
+                    pos_hint: {"center_x": .5}
+
+                SubjectLabel:
+                    text: "Cards"
 
                 AddCardLayout:
                     card_layout: _card_layout

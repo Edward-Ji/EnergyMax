@@ -44,11 +44,13 @@
                 markup: True
                 text: "[b][size=24]Receipt[/b][/size]"
 
-            SaveButton:
-                on_release: _receipt.save_to_file()
+            HelpButton:
+                msg:
+                    "Your receipt is automatically saved to\n{}".format(_receipt.path)
 
         MainScrollView:
-            size_hint_x: .5
+            size_hint_x: None
+            width: 450
             pos_hint: {"center_x": .5}
 
             ReceiptLayout:
@@ -59,20 +61,26 @@
 
                 canvas:
                     Color:
-                        rgba: 1, 1, 1, 1
+                        rgba: 0.9, 0.9, 1, 1
                     Rectangle:
                         pos: self.pos
                         size: self.size
 
-                ReceiptLabel:
-                    markup: True
-                    text: "[b]Receipt[/b]"
-                    font_size: 30
-                    halign: "center"
+                # receipt title layout
+                BoxLayout:
+                    size_hint_y: None
+                    height: self.minimum_height
+
+                    Image:
+                        source: "res/logo.png"
+                        size_hint_y: None
+                        size: 80, 80
+
+                    ReceiptLabel:
+                        markup: True
+                        text: "[b]Receipt[/b]"
+                        font_size: 30
+                        halign: "center"
 
                 CartLayout:
                     id: _cart_layout
-                    status_bar: _status_bar
-
-                StatusBar:
-                    id: _status_bar
