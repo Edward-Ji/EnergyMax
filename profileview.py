@@ -23,10 +23,14 @@ class ChangePswBtn(MainButton):
         if msg:
             show_popup("Request failed", msg)
         else:
-            show_popup("Congratulations", "You successfully changed your password!")
-            # clear password prevent breach
+            # clear password to prevent breach
             self.ori_psw.psw_input.text = ''
             self.new_psw.psw_input.text = ''
+            # return back to login screen
+            show_popup("Congratulations",
+                       "You successfully changed your password!\n"
+                       "Re-login to continue!")
+            self.root.screen_manager.current = "login_screen"
 
 
 # profile settings under cards subject
