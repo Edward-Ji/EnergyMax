@@ -6,13 +6,14 @@ from random import choice, randint, seed
 import datetime
 
 from loginview import show_popup
-from mainview import ToolBar, ToolBarButton
 
 from kivy.clock import Clock
+from kivy.core.audio import SoundLoader
 from kivy.properties import BooleanProperty, ObjectProperty, StringProperty
 from kivy.uix.relativelayout import RelativeLayout
 
-WHEEL_SAVE = "save/wheel.p"
+wheel_save_path = "save/wheel.p"
+drum_roll_sound = SoundLoader.load("res/sounds/drum_roll.ogg")
 
 
 class WheelLayout(RelativeLayout):
@@ -27,7 +28,7 @@ class WheelLayout(RelativeLayout):
     def check(self):
         usr = Person.single.usr_id
         try:
-            with open(WHEEL_SAVE, 'br') as f:
+            with open(wheel_save_path, 'br') as f:
                 wheel_data = pickle.load(f)
                 available_date = wheel_data[usr]
         except (FileNotFoundError, EOFError, KeyError):
@@ -49,12 +50,12 @@ class WheelLayout(RelativeLayout):
         # save next available date to file
         usr = Person.single.usr_id
         try:
-            with open(WHEEL_SAVE, 'br') as f:
+            with open(wheel_save_path, 'br') as f:
                 wheel_data = pickle.load(f)
         except (FileNotFoundError, EOFError):
             wheel_data = {}
         wheel_data[usr] = next_monday
-        with open(WHEEL_SAVE, 'bw') as f:
+        with open(wheel_save_path, 'bw') as f:
             pickle.dump(wheel_data, f)
 
     def begin(self):
@@ -73,6 +74,9 @@ class WheelLayout(RelativeLayout):
         self.schedule = Clock.schedule_interval(self.shuffle, 0.1)
         Clock.schedule_once(lambda d_time: self.stop(), length)
 
+        # play sound effect
+        drum_roll_sound.play()
+
     def shuffle(self, d_time):
         seed(d_time)
         not_chosen = list(range(0, len(Item.data) - 1))
@@ -86,3 +90,4 @@ class WheelLayout(RelativeLayout):
         self.shuffling = False
         show_popup("Congratulations!",
                    "You just got {}, which is worth ${:.2f}.".format(self.name.lower(), self.price))
+        drum_roll_sound.stop()

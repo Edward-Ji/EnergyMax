@@ -8,8 +8,8 @@
     size: self.texture_size
 
 <MainButton>:
-    background_normal: "res/button_normal.png"
-    background_down: "res/button_down.png"
+    background_normal: "res/images/button_normal.png"
+    background_down: "res/images/button_down.png"
 
 <ToolBar>:
     spacing: 12
@@ -31,8 +31,8 @@
 
 <ToolBarButton>:
     name: self.__class__.__name__.replace("Button", '')
-    background_normal: "res/" + self.name + "_btn_normal.png"
-    background_down: "res/" + self.name + "_btn_down.png"
+    background_normal: "res/images/" + self.name + "_btn_normal.png"
+    background_down: "res/images/" + self.name + "_btn_down.png"
     size_hint: None, None
     size: 52, 52
     pos_hint: {"center_y": .5}
@@ -126,7 +126,7 @@
         ToolBar:
 
             Image:
-                source: "res/icon.ico"
+                source: "res/images/icon.ico"
                 size_hint: None, None
                 size: 48, 48
                 pos_hint: {"center_y": .5}
@@ -148,7 +148,7 @@
         ToolBar:
 
             Image:
-                source: "res/search_icon.png"
+                source: "res/images/search_icon.png"
                 size_hint: None, None
                 size: 52, 52
                 pos_hint: {"center_y": .5}

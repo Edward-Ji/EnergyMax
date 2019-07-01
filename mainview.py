@@ -2,6 +2,7 @@ from cart import *
 
 from os.path import isfile
 
+from kivy.core.audio import SoundLoader
 from kivy.properties import BoundedNumericProperty, NumericProperty, ObjectProperty, StringProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
@@ -10,8 +11,10 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.screenmanager import FadeTransition, CardTransition
 from kivy.uix.scrollview import ScrollView
 
-ITEM_DATA = "res/items.p"
-DISMISS_MSG = "\n\n[i]Click anywhere else to close"
+item_data_path = "res/items.p"
+dismiss_msg = "\n\n[i]Click anywhere else to close"
+button_press_sound = SoundLoader.load("res/sounds/button_press.ogg")
+disabled_sound = SoundLoader.load("res/sounds/disabled.ogg")
 
 
 class ToolBar(BoxLayout):
@@ -20,14 +23,15 @@ class ToolBar(BoxLayout):
 
 class ToolBarButton(Button):
 
-    def __init__(self, **kwargs):
-        super(ToolBarButton, self).__init__(**kwargs)
-        self.drop_down = DropDown(auto_width=False,
-                                  width=2*self.width)
+    def on_press(self):
+        button_press_sound.play()
 
 
 class MainButton(Button):
-    pass
+
+    def on_press(self):
+        button_press_sound.play()
+        return super(MainButton, self).on_press()
 
 
 class DropDownButton(MainButton):
@@ -41,13 +45,17 @@ class ProfileButton(ToolBarButton):
     def __init__(self, **kwargs):
         super(ProfileButton, self).__init__(**kwargs)
 
-        # add functional elements to drop down menu
+        # create drop down menu
+        self.drop_down = DropDown(auto_width=False, width=2*self.width)
+
+        # add profile button to drop down
         profile_btn = DropDownButton(text="Profile")
         profile_btn.bind(on_release=lambda x: setattr(self.root.screen_manager, "current", "profile_screen"))
         profile_btn.bind(on_release=self.drop_down.dismiss)
         profile_btn.bind(on_release=lambda x: self.root.screen_manager.record())
         self.drop_down.add_widget(profile_btn)
 
+        # add log out button to drop down
         log_out_btn = DropDownButton(text="Log Out")
         log_out_btn.bind(on_release=lambda x: setattr(self.root.screen_manager,
                                                       "transition",
@@ -86,7 +94,7 @@ class ItemView(BoxLayout):
             self.quantity += value
             Cart.item_action(self.name, value)
         except ValueError:
-            return
+            disabled_sound.play()
 
 
 class MainScrollView(ScrollView):
@@ -105,8 +113,7 @@ class ItemLayout(GridLayout):
     def filter(self, text):
 
         # remove all children
-        for _ in range(len(self.children)):
-            self.remove_widget(self.children[0])
+        self.clear_widgets()
 
         # only add widget if pass filter
         for item_info in Item.data:

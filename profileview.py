@@ -3,8 +3,8 @@ from person import *
 import datetime
 import re
 
-from loginview import InputBox, show_popup
-from mainview import MainButton, MainScrollView, ToolBar, ToolBarButton
+from loginview import show_popup
+from mainview import MainButton
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
@@ -140,7 +140,6 @@ class CardItem(RelativeLayout):
 class CardLayout(BoxLayout):
 
     def refresh(self):
-        for _ in range(len(self.children)):
-            self.remove_widget(self.children[0])
+        self.clear_widgets()
         for number, exp_date in Person.single.cards:
             self.add_widget(CardItem(number, exp_date))

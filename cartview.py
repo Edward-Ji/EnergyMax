@@ -1,8 +1,7 @@
-from person import *
 from cart import *
 
 from loginview import show_popup
-from mainview import ToolBar, ToolBarButton, MainButton, MainScrollView
+from mainview import ToolBarButton, MainButton
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
@@ -32,8 +31,7 @@ class CartItem(BoxLayout):
 class CartLayout(BoxLayout):
 
     def refresh(self):
-        for _ in range(len(self.children)):
-            self.remove_widget(self.children[0])
+        self.clear_widgets()
         if Cart.content:
             self.add_widget(CartTitle())
             for name, info in Cart.content.items():

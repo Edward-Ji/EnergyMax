@@ -2,28 +2,29 @@ from person import *
 from settings import *
 
 from kivy.clock import Clock
+from kivy.core.audio import SoundLoader
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.checkbox import CheckBox
 from kivy.uix.label import Label
-from kivy.uix.screenmanager import FadeTransition, CardTransition, NoTransition
+from kivy.uix.screenmanager import FadeTransition, CardTransition
 from kivy.uix.popup import Popup
 from kivy.uix.togglebutton import ToggleButton
 
 
-DISMISS_MSG = "[u]or click anywhere else to close"
-ENCRYPT_CODE = b"Nutrition"
+dismiss_msg = "[u]or click anywhere else to close"
+popup_sound = SoundLoader.load("res/sounds/popup.ogg")
 
 
+# show popup with potential button bind
 def show_popup(title, message, btn_text=None, btn_bind=None):
-    close_btn = Button(text="Close",
-                       size_hint=(None, None),
-                       size=(85, 50),
-                       pos_hint={"center_x": .5})
+
     popup_layout = BoxLayout(orientation="vertical")
     popup_layout.add_widget(Label(text=message,
                                   markup=True,
                                   color=(1, 1, 1, 1)))
+
+    # add button if there is an extra functional button
     if btn_text and btn_bind:
         extra_btn = Button(text=btn_text,
                            size_hint=(None, None),
@@ -32,14 +33,27 @@ def show_popup(title, message, btn_text=None, btn_bind=None):
         for event in btn_bind:
             extra_btn.bind(on_press=event)
         popup_layout.add_widget(extra_btn)
+
+    # add close button last
+    close_btn = Button(text="Close",
+                       size_hint=(None, None),
+                       size=(85, 50),
+                       pos_hint={"center_x": .5})
     popup_layout.add_widget(close_btn)
+
+    # create popup object
     popup = Popup(title=title,
                   content=popup_layout,
                   size_hint=(.5, None),
                   height=300)
+
+    # bind all button with dismissing popup event
     if btn_text and btn_bind:
         extra_btn.bind(on_press=popup.dismiss)
     close_btn.bind(on_press=popup.dismiss)
+
+    # open popup and play sound
+    popup_sound.play()
     popup.open()
 
 
@@ -118,8 +132,6 @@ class RememberCheck(CheckBox):
             self.warned = True
 
         Settings.push("remember_psw", value)
-
-        return super(RememberCheck, self).on_state(instance, value)
 
 
 class LoginView(BoxLayout):

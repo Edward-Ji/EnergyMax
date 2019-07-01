@@ -60,7 +60,7 @@ class AppScreenManager(ScreenManager):
 class EnergyMaxApp(App):
 
     def build(self):
-        self.icon = "res/icon.ico"
+        self.icon = "res/images/icon.ico"
         return AppScreenManager()
 
 
