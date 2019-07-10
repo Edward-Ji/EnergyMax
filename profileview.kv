@@ -134,6 +134,26 @@
     size_hint_y: None
     height: self.minimum_height
 
+<SoundPanel@BoxLayout>:
+    orientation: "horizontal"
+    padding: 10
+    size_hint_y: None
+    height: 52
+
+    MainLabel:
+        text: "Sound effects"
+        text_size: self.size
+        halign: "left"
+
+    SoundToggle
+
+<SoundToggle>:
+    background_normal: "res/images/sound_btn_normal.png"
+    background_down: "res/images/sound_btn_down.png"
+    size_hint: None, None
+    height: 52
+    width: 52
+
 <ProfileScreen@Screen>:
     name: "profile_screen"
     card_layout: _card_layout
@@ -189,10 +209,15 @@
                     pos_hint: {"center_x": .5}
 
                 SubjectLabel:
-                    text: "Cards"
+                    text: "Manage Cards"
 
                 AddCardLayout:
                     card_layout: _card_layout
 
                 CardLayout:
                     id: _card_layout
+
+                SubjectLabel:
+                    text: "Settings"
+
+                SoundPanel

@@ -9,7 +9,7 @@
 # input box that allows tab to focus next
 <InputBox@TextInput+FocusBehavior>:
 
-    # outline
+    # outline (removed because it overlays top bar)
 #    canvas.before:
 #        Color:
 #            rgba: 0, 0, 0, 0.6
@@ -22,7 +22,8 @@
     background_color: 0, 0, 0, 0.1
     cursor_color: 0, 0, 0, 1
     font_size: "25dp"
-    padding_y: [self.height / 2.0 - (self.line_height / 2.0) * len(self._lines), 0]  # vertically align text at center
+    # vertically align text at center, maybe removed in a future version
+    padding_y: [self.height / 2.0 - (self.line_height / 2.0) * len(self._lines), 0]
 
 <PasswordInput@BoxLayout>:
 

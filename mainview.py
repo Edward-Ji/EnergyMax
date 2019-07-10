@@ -1,4 +1,5 @@
 from cart import *
+from settings import *
 
 from os.path import isfile
 
@@ -24,13 +25,15 @@ class ToolBar(BoxLayout):
 class ToolBarButton(Button):
 
     def on_press(self):
-        button_press_sound.play()
+        if Settings.retrieve("sound_effects", "down") == "down":
+            button_press_sound.play()
 
 
 class MainButton(Button):
 
     def on_press(self):
-        button_press_sound.play()
+        if Settings.retrieve("sound_effects", "down") == "down":
+            button_press_sound.play()
         return super(MainButton, self).on_press()
 
 
@@ -94,7 +97,8 @@ class ItemView(BoxLayout):
             self.quantity += value
             Cart.item_action(self.name, value)
         except ValueError:
-            disabled_sound.play()
+            if Settings.retrieve("sound_effects", "down") == "down":
+                disabled_sound.play()
 
 
 class MainScrollView(ScrollView):
@@ -119,10 +123,11 @@ class ItemLayout(GridLayout):
         for item_info in Item.data:
             name = item_info[0]
             item_view = ItemView(*item_info)
-            if text.lower().replace(' ', '') in name.lower().replace(' ', ''):
+            if text.lower().replace(' ', '') in name.lower().replace(' ', ''):  # case insensitive and space ignored
                 self.add_widget(item_view)
 
     def refresh(self):
+
         # load saved cart
         saved_cart = Cart.load_cart()
         for item_view in self.children:

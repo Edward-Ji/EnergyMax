@@ -1,5 +1,6 @@
 from person import Person
 from cart import Item
+from settings import *
 
 import pickle
 from random import choice, randint, seed
@@ -75,7 +76,8 @@ class WheelLayout(RelativeLayout):
         Clock.schedule_once(lambda d_time: self.stop(), length)
 
         # play sound effect
-        drum_roll_sound.play()
+        if Settings.retrieve("sound_effects", "down") == "down":
+            drum_roll_sound.play()
 
     def shuffle(self, d_time):
         seed(d_time)

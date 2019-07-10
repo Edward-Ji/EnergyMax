@@ -53,7 +53,8 @@ def show_popup(title, message, btn_text=None, btn_bind=None):
     close_btn.bind(on_press=popup.dismiss)
 
     # open popup and play sound
-    popup_sound.play()
+    if Settings.retrieve("sound_effects", "down") == "down":
+        popup_sound.play()
     popup.open()
 
 

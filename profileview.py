@@ -1,4 +1,5 @@
 from person import *
+from settings import *
 
 import datetime
 import re
@@ -9,6 +10,7 @@ from mainview import MainButton
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.relativelayout import RelativeLayout
+from kivy.uix.togglebutton import ToggleButton
 
 card_number_pattern = r"[\d]{16}$"
 card_exp_date_pattern = r"[\d]{2}$"
@@ -143,3 +145,13 @@ class CardLayout(BoxLayout):
         self.clear_widgets()
         for number, exp_date in Person.single.cards:
             self.add_widget(CardItem(number, exp_date))
+
+
+class SoundToggle(ToggleButton):
+
+    def __init__(self, **kwargs):
+        super(SoundToggle, self).__init__(**kwargs)
+        self.state = Settings.retrieve("sound_effects", "down")
+
+    def on_state(self, instance, value):
+        Settings.push("sound_effects", value)
