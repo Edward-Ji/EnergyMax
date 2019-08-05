@@ -3,7 +3,8 @@ from settings import *
 
 from os.path import isfile
 
-from kivy.core.audio import SoundLoader
+from loginview import show_popup
+
 from kivy.properties import BoundedNumericProperty, NumericProperty, ObjectProperty, StringProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
@@ -14,8 +15,6 @@ from kivy.uix.scrollview import ScrollView
 
 item_data_path = "res/items.p"
 dismiss_msg = "\n\n[i]Click anywhere else to close"
-button_press_sound = SoundLoader.load("res/sounds/button_press.ogg")
-disabled_sound = SoundLoader.load("res/sounds/disabled.ogg")
 
 
 class ToolBar(BoxLayout):
@@ -23,18 +22,11 @@ class ToolBar(BoxLayout):
 
 
 class ToolBarButton(Button):
-
-    def on_press(self):
-        if Settings.retrieve("sound_effects", "down") == "down":
-            button_press_sound.play()
+    pass
 
 
 class MainButton(Button):
-
-    def on_press(self):
-        if Settings.retrieve("sound_effects", "down") == "down":
-            button_press_sound.play()
-        return super(MainButton, self).on_press()
+    pass
 
 
 class DropDownButton(MainButton):
@@ -97,8 +89,8 @@ class ItemView(BoxLayout):
             self.quantity += value
             Cart.item_action(self.name, value)
         except ValueError:
-            if Settings.retrieve("sound_effects", "down") == "down":
-                disabled_sound.play()
+            show_popup("Operation not permitted!",
+                       "Item quantity can not go below 0 or above 99")
 
 
 class MainScrollView(ScrollView):

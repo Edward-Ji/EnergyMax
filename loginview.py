@@ -2,7 +2,6 @@ from person import *
 from settings import *
 
 from kivy.clock import Clock
-from kivy.core.audio import SoundLoader
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.checkbox import CheckBox
@@ -13,7 +12,6 @@ from kivy.uix.togglebutton import ToggleButton
 
 
 dismiss_msg = "[u]or click anywhere else to close"
-popup_sound = SoundLoader.load("res/sounds/popup.ogg")
 
 
 # show popup with potential button bind
@@ -52,9 +50,6 @@ def show_popup(title, message, btn_text=None, btn_bind=None):
         extra_btn.bind(on_press=popup.dismiss)
     close_btn.bind(on_press=popup.dismiss)
 
-    # open popup and play sound
-    if Settings.retrieve("sound_effects", "down") == "down":
-        popup_sound.play()
     popup.open()
 
 

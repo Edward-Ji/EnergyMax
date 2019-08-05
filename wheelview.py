@@ -1,6 +1,5 @@
 from person import Person
 from cart import Item
-from settings import *
 
 import pickle
 from random import choice, randint, seed
@@ -9,12 +8,10 @@ import datetime
 from loginview import show_popup
 
 from kivy.clock import Clock
-from kivy.core.audio import SoundLoader
 from kivy.properties import BooleanProperty, ObjectProperty, StringProperty
 from kivy.uix.relativelayout import RelativeLayout
 
 wheel_save_path = "save/wheel.p"
-drum_roll_sound = SoundLoader.load("res/sounds/drum_roll.ogg")
 
 
 class WheelLayout(RelativeLayout):
@@ -75,10 +72,6 @@ class WheelLayout(RelativeLayout):
         self.schedule = Clock.schedule_interval(self.shuffle, 0.1)
         Clock.schedule_once(lambda d_time: self.stop(), length)
 
-        # play sound effect
-        if Settings.retrieve("sound_effects", "down") == "down":
-            drum_roll_sound.play()
-
     def shuffle(self, d_time):
         seed(d_time)
         not_chosen = list(range(0, len(Item.data) - 1))
@@ -90,6 +83,7 @@ class WheelLayout(RelativeLayout):
     def stop(self):
         self.schedule.cancel()
         self.shuffling = False
+        Person.single.earn_credits(1)
         show_popup("Congratulations!",
-                   "You just got {}, which is worth ${:.2f}.".format(self.name.lower(), self.price))
-        drum_roll_sound.stop()
+                   "You just got {}, which is worth ${:.2f}.\n"
+                   "One credit earned for your account!".format(self.name.lower(), self.price))

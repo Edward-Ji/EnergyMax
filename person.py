@@ -31,6 +31,7 @@ PERSON_SAVE = "save/person.p"
 
 class Person:
 
+    loyal_limit = 24
     single = None
 
     def __init__(self, usr_id, password):
@@ -38,6 +39,7 @@ class Person:
         self.password = password
         self.hash = None
         self.cards = []
+        self.credits = 0
         self.__class__.single = self
 
     def generate_hash(self):
@@ -67,7 +69,7 @@ class Person:
         self.generate_hash()
 
         # save hash
-        usr_map[self.usr_id] = self.hash, self.cards
+        usr_map[self.usr_id] = self.hash, self.cards, self.credits
         pickle.dump(usr_map, open(PERSON_SAVE, 'bw'))
 
     def login(self):
@@ -85,7 +87,7 @@ class Person:
         if not usr_info:
             return "No user named " + self.usr_id + " found"
         else:
-            self.hash, self.cards = usr_info
+            self.hash, self.cards, self.credits = usr_info
 
         # check password
         salt = "energymax"
@@ -114,8 +116,8 @@ class Person:
 
         # save new password
         usr_map = pickle.load(open(PERSON_SAVE, 'br'))
-        h, self.cards = usr_map[self.usr_id]
-        usr_map[self.usr_id] = self.hash, self.cards
+        h, self.cards, p = usr_map[self.usr_id]
+        usr_map[self.usr_id] = self.hash, self.cards, self.credits
         pickle.dump(usr_map, open(PERSON_SAVE, 'bw'))
 
     def add_card(self, number, exp_date):
@@ -129,18 +131,32 @@ class Person:
         usr_map = pickle.load(open(PERSON_SAVE, 'br'))
 
         # check if card already exists
-        h, cards = usr_map[self.usr_id]
-        if number in [c[0] for c in cards]:
-            return "Card already exists."
+        for h, cards, p in usr_map.values():
+            if number in [c[0] for c in cards]:
+                return "Card already exists."
 
         # save to file
         self.cards.append((number, exp_date))
-        usr_map[self.usr_id] = self.hash, self.cards
+        usr_map[self.usr_id] = self.hash, self.cards, self.credits
         pickle.dump(usr_map, open(PERSON_SAVE, 'bw'))
 
     def remove_card(self, index):
         # save to self and file
         del self.cards[index]
         usr_map = pickle.load(open(PERSON_SAVE, 'br'))
-        usr_map[self.usr_id] = self.hash, self.cards
+        usr_map[self.usr_id] = self.hash, self.cards, self.credits
         pickle.dump(usr_map, open(PERSON_SAVE, 'bw'))
+
+    def earn_credits(self, points):
+        # add points to account credits and save
+        self.credits += points
+        usr_map = pickle.load(open(PERSON_SAVE, 'br'))
+        usr_map[self.usr_id] = self.hash, self.cards, self.credits
+        pickle.dump(usr_map, open(PERSON_SAVE, 'bw'))
+
+    @property
+    def loyalty(self):
+        loyalty = Person.loyal_limit - self.credits
+        if loyalty < 0:
+            loyalty = 0
+        return loyalty

@@ -45,6 +45,7 @@ class AppScreenManager(ScreenManager):
         elif value == "wheel_screen":
             self.wheel_screen.wheel_layout.check()
         elif value == "profile_screen":
+            self.profile_screen.credit_label.refresh()
             self.profile_screen.card_layout.refresh()
         elif value == "receipt_screen":
             self.receipt_screen.cart_layout.refresh()

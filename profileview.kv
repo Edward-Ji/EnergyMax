@@ -134,29 +134,11 @@
     size_hint_y: None
     height: self.minimum_height
 
-<SoundPanel@BoxLayout>:
-    orientation: "horizontal"
-    padding: 10
-    size_hint_y: None
-    height: 52
-
-    MainLabel:
-        text: "Sound effects"
-        text_size: self.size
-        halign: "left"
-
-    SoundToggle
-
-<SoundToggle>:
-    background_normal: "res/images/sound_btn_normal.png"
-    background_down: "res/images/sound_btn_down.png"
-    size_hint: None, None
-    height: 52
-    width: 52
 
 <ProfileScreen@Screen>:
     name: "profile_screen"
     card_layout: _card_layout
+    credit_label: _credit_label
 
     BoxLayout:
         orientation: "vertical"
@@ -178,6 +160,17 @@
                 spacing: 10
                 size_hint_y: None
                 height: self.minimum_height
+
+                SubjectLabel:
+                    text: "Account"
+
+                CreditLabel:
+                    id: _credit_label
+
+                    size_hint_y: None
+                    height: 72
+                    color: 0, 0, 0, 1
+                    font_size: "20dp"
 
                 SubjectLabel:
                     text: "Change password"
@@ -211,13 +204,12 @@
                 SubjectLabel:
                     text: "Manage Cards"
 
+                MainLabel:
+                    text: "You can add up to three bank cards."
+                    color: 0, 0, 0, 1
+
                 AddCardLayout:
                     card_layout: _card_layout
 
                 CardLayout:
                     id: _card_layout
-
-                SubjectLabel:
-                    text: "Settings"
-
-                SoundPanel

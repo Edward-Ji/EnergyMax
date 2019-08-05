@@ -37,12 +37,20 @@ class ReceiptLayout(BoxLayout):
 
         # display user and shop detail on receipt
         info = {"User": Person.single.usr_id, "Serial number": self.serial,
-                "Time": datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S"), "Card": self.card_num,
+                "Time": datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S"),
+                "Payment method": self.card_num,
                 "Net total": "${:.2f}".format(self.pay_info[0]),
                 "Discount": "${:.2f}".format(self.pay_info[1]),
                 "Payment": "${:.2f}".format(self.pay_info[2])}
         for key, val in info.items():
             self.add_widget(ReceiptPair(key=key, val=val))
+
+        # save transaction
+        with open("save/transactions.txt", 'a') as f:
+            f.write("<--- Purchase Details --->\n")
+            for key, value in info.items():
+                f.write("{:18s}|{}\n".format(key, value))
+            f.write("\n=*=*=*=*=*=*=*=*=*=\n")
 
         # export receipt as png
         self.path = os.path.abspath("receipts/{}.png".format(self.serial))

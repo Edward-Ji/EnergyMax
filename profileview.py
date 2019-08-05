@@ -1,5 +1,4 @@
 from person import *
-from settings import *
 
 import datetime
 import re
@@ -10,10 +9,23 @@ from mainview import MainButton
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.relativelayout import RelativeLayout
-from kivy.uix.togglebutton import ToggleButton
 
 card_number_pattern = r"[\d]{16}$"
 card_exp_date_pattern = r"[\d]{2}$"
+
+
+class CreditLabel(Label):
+
+    def refresh(self):
+        msg = "You have {} credits.\n".format(Person.single.credits)
+        if not Person.single.loyalty:
+            msg += "You are our loyal customer!\n" \
+                   "You enjoy a 5% discount on every purchase you make!"
+        else:
+            msg += "You are lacking {} credits to become a loyal customer!\n" \
+                   "Loyal customers have a 5% discount on every purchase.\n" \
+                   "You earn points when you purchase or engage in activities.".format(Person.single.loyalty)
+        self.text = msg
 
 
 # profile settings under change password subject
@@ -104,6 +116,7 @@ class AddCardLayout(BoxLayout):
                        "Go and enjoy shopping now!")
 
 
+# dynamic label that hide its detail in default
 class CardNumberLabel(Label):
 
     def on_touch_down(self, touch):
@@ -119,6 +132,7 @@ class CardNumberLabel(Label):
             self.text = self.root.number_hint
 
 
+# a simulation for bank card
 class CardItem(RelativeLayout):
 
     def __init__(self, number, exp_date, **kwargs):
@@ -145,13 +159,3 @@ class CardLayout(BoxLayout):
         self.clear_widgets()
         for number, exp_date in Person.single.cards:
             self.add_widget(CardItem(number, exp_date))
-
-
-class SoundToggle(ToggleButton):
-
-    def __init__(self, **kwargs):
-        super(SoundToggle, self).__init__(**kwargs)
-        self.state = Settings.retrieve("sound_effects", "down")
-
-    def on_state(self, instance, value):
-        Settings.push("sound_effects", value)
