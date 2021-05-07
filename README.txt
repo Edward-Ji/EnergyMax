@@ -1,7 +1,7 @@
 === Testing Account ===
 user id: admin
 password: Ab123456
-Remember me toggle is checked in default do you are not required to enter your password.
+Remember me toggle is checked by default so you do not need to enter your password every time you test.
 A bank card with number 1234567890123456 is registered.
 The card is connected to admin account.
 
